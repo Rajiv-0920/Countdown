@@ -1,55 +1,27 @@
-const color_container = document.querySelector(".color-container");
-const generate_Btn = document.querySelector(".btn");
+const daysEl = document.querySelector(".days");
+const hoursEl = document.querySelector(".hours");
+const minutesEl = document.querySelector(".minutes");
+const secondsEl = document.querySelector(".seconds");
 
-generate_Btn.addEventListener("click", () => {
-    generate_Color()
-})
+setInterval(() => {
+    const date = new Date();
+    const next_Year = new Date(`1-1-${date.getFullYear() + 1}`);
+    let dif;
 
+    dif = next_Year - date;
 
-generate_Color();
+    let seconds = Math.floor(dif / 1000 % 60);
+    let minutes = Math.floor(dif / 1000 / 60 % 60);
+    let hours = Math.floor(dif / 1000 / 60 / 60 % 24);
+    let days = Math.floor(dif / 1000 / 60 / 60 / 24);
 
-function generate_Color() {
-    color_container.innerHTML = '';
-    for (var i = 1; i <= 12; i++) {
-        var color_Code = generate_code();
-        color_container.innerHTML += `
-        <div class="color-box">
-        <div class="color" style="background-color: ${color_Code}"></div>
-        <div class="color-round" style="background-color: ${color_Code}"></div>
-        <div class="color-code">${color_Code}</div>
-        <div class="copy">Copied..!</div>
-        </div>`
-    }
-    const cpy_info = document.querySelectorAll(".copy");
-    const color = document.querySelectorAll(".color");
-    const color_round = document.querySelectorAll(".color-round");
-    const color_txt = document.querySelectorAll(".color-code");
+    seconds = seconds < 10 ? `0${seconds}` : seconds;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    hours = hours < 10 ? `0${hours}` : hours;
+    days = days < 10 ? `0${days}` : days;
 
-    copyToClipboard(color, cpy_info);
-    copyToClipboard(color_txt, cpy_info);
-    copyToClipboard(color_round, cpy_info);
-}
-
-function generate_code() {
-    const code = "abcdef0123456789";
-    let color_Code = "";
-    for (var i = 0; i < 6; i++) {
-        let random_num = Math.floor(Math.random() * 16);
-        color_Code += code[random_num];
-    }
-    return `#${color_Code.toUpperCase()}`;
-}
-
-function copyToClipboard(element, cpy_info) {
-    element.forEach((e, idx) => {
-        e.addEventListener("click", () => {
-            let color = e.parentNode.children[2].innerText.split('').filter(t => t != '#').join('');
-            navigator.clipboard.writeText(color);
-            cpy_info.forEach(e => e.classList.remove("active"))
-            cpy_info[idx].classList.add("active");
-            setTimeout(() => {
-                cpy_info[idx].classList.remove("active");
-            }, 3000)
-        })
-    })
-}
+    daysEl.innerText = days;
+    hoursEl.innerText = hours;
+    minutesEl.innerText = minutes;
+    secondsEl.innerText = seconds;
+}, 1000)
